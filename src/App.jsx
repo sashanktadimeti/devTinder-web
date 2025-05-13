@@ -1,13 +1,22 @@
-import { useState } from 'react'
-
+import { useState } from "react";
+import Body from "./Body";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from "./Login";
+import Profile from "./Profile";
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-     <h1>hello world</h1>
+      <BrowserRouter basename="/">
+        <Routes>
+          <Route path="/" element={<Body />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
