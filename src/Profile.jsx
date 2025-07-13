@@ -1,25 +1,69 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Usercard from "./Usercard";
+import { BASE_URL } from "./utils/constants";
+import axios from "axios";
+import { addUser } from "./utils/userSlice";
 
 const Profile = () => {
   const user = useSelector((store) => store.user);
-  if (!user) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner text-primary text-lg">
-          Loading profile...
-        </span>
-      </div>
-    );
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [skills, setSkills] = useState("");
+  const [about, setAbout] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [_id, setUserId] = useState("");
+  const dispatch = useDispatch();
+  const [profileSaved, setprofileSaved] = useState("")
+  const [showToast, setShowToast] = useState(false);
+  const handleToast = (msg)=>{
+    setShowToast(true)
+    setprofileSaved(msg)
+    setTimeout(()=>{setShowToast(false)},3000)
   }
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
-  const [skills, setSkills] = useState(user.skills);
-  const [about, setAbout] = useState(user.about);
-  const [age, setAge] = useState(user.age);
-  const [gender, setGender] = useState(user.gender);
+  const handleSave = async () => {
+    try {
+      let changedskills;
+      if (!Array.isArray(skills)) {
+        changedskills = skills.split(",");
+      }
+      const result = await axios.patch(
+        BASE_URL + "/profile/edit",
+        {
+          firstName,
+          lastName,
+          photoUrl,
+          skills: changedskills ? changedskills : skills,
+          about,
+          age,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(result?.data?.user));
+      handleToast("Profile saved successfully")
+    } catch (err) {
+      handleToast(err.response.data.message)
+    }
+  };
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName || "");
+      setLastName(user.lastName || "");
+      setPhotoUrl(user.photoUrl || "");
+      setSkills(user.skills || "");
+      setAbout(user.about || "");
+      setAge(user.age || "");
+      setGender(user.gender || "");
+      setUserId(user._id  || "")
+    }
+  }, [user]);
+
+  if (!user) return <p>Loading profile...</p>;
+
   return (
     <div className="flex justify-center items-center gap-10">
       <div className="flex justify-center items-start h-screen">
@@ -31,12 +75,12 @@ const Profile = () => {
 
             <fieldset className="form-control mb-0.5">
               <label className="label">
-                <span className="label-text">FirstName</span>
+                <span className="label-text">First Name</span>
               </label>
               <input
                 onChange={(e) => setFirstName(e.target.value)}
                 type="text"
-                placeholder="edit firstName"
+                placeholder="Edit first name"
                 className="input input-bordered"
                 value={firstName}
               />
@@ -44,12 +88,12 @@ const Profile = () => {
 
             <fieldset className="form-control mb-0.5">
               <label className="label">
-                <span className="label-text">LastName</span>
+                <span className="label-text">Last Name</span>
               </label>
               <input
                 onChange={(e) => setLastName(e.target.value)}
                 type="text"
-                placeholder="edit lastName"
+                placeholder="Edit last name"
                 className="input input-bordered"
                 value={lastName}
               />
@@ -57,12 +101,12 @@ const Profile = () => {
 
             <fieldset className="form-control mb-0.5">
               <label className="label">
-                <span className="label-text">PhotoUrl</span>
+                <span className="label-text">Photo URL</span>
               </label>
               <input
                 onChange={(e) => setPhotoUrl(e.target.value)}
                 type="text"
-                placeholder="edit photo"
+                placeholder="Edit photo URL"
                 className="input input-bordered"
                 value={photoUrl}
               />
@@ -75,7 +119,7 @@ const Profile = () => {
               <input
                 onChange={(e) => setAbout(e.target.value)}
                 type="text"
-                placeholder="edit about section"
+                placeholder="Edit about section"
                 className="input input-bordered"
                 value={about}
               />
@@ -88,7 +132,7 @@ const Profile = () => {
               <input
                 onChange={(e) => setAge(e.target.value)}
                 type="number"
-                placeholder="edit age"
+                placeholder="Edit age"
                 className="input input-bordered"
                 value={age}
               />
@@ -101,19 +145,27 @@ const Profile = () => {
               <input
                 onChange={(e) => setSkills(e.target.value)}
                 type="text"
-                placeholder="must be comma separated values"
+                placeholder="Must be comma-separated values"
                 className="input input-bordered"
                 value={skills}
               />
             </fieldset>
 
             <div className="form-control mt-0.5 flex justify-center">
-              <button className="btn btn-primary">Save</button>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="card bg-base-900 w-72 pl-3 shadow-sm">
+
+      <div className="card bg-base-900 w-72 pl-3 pr-4 shadow-sm">
         <p className="mx-auto text-2xl text-black p-3 font-bold">
           Preview Card
         </p>
@@ -125,9 +177,17 @@ const Profile = () => {
             gender,
             age,
             about,
+            _id
           }}
         />
       </div>
+      {showToast && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success">
+            <span>{profileSaved}.</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

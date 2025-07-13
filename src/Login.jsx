@@ -23,7 +23,6 @@ const Login = () => {
         { withCredentials: true }
       );
       dispatch(addUser(result.data))
-      console.log(result)
       return navigate("/feed")
     } catch (err) {
       seterror(err?.response?.data?.message)

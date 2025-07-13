@@ -11,11 +11,10 @@ const Body = () => {
   const navigate = useNavigate()
   const fetchUser = async()=>{
     try{
-    const result = await axios.get(BASE_URL + "/profile",{},{withCredentials: true})
+    const result = await axios.get(BASE_URL + "/profile",{withCredentials: true})
     dispatch(addUser(result.data))
     }
     catch(err){
-      console.log(err)
       if(err.status >= 400){
         return navigate("/")
       }
