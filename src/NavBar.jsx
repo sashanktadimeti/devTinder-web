@@ -21,7 +21,7 @@ const NavBar = () => {
 
   }
   const user = useSelector((store)=>store.user)
-  return (
+  return  (
     <div className="navbar bg-neutral shadow-sm">
       <div className="flex-1">
         <Link to="/feed" className="btn btn-ghost text-xl text-neutral-content">
@@ -36,7 +36,7 @@ const NavBar = () => {
         ) : (
           ""
         )}
-        <div className="dropdown dropdown-end">
+        { user &&  <div className="dropdown dropdown-end">
           <div
             tabIndex={0}
             role="button"
@@ -74,6 +74,7 @@ const NavBar = () => {
             </li>
           </ul>
         </div>
+}
       </div>
     </div>
   );

@@ -48,6 +48,7 @@ const Connections = () => {
       <div className="flex flex-col items-center gap-6 overflow-y-auto pb-40">
         {connectionsList &&
           connectionsList.map((connection, index) => (
+            
             <div
               key={index}
               className="w-full max-w-md flex flex-col md:flex-row items-center md:items-start gap-6 p-4 border border-gray-200 shadow-md rounded-xl bg-base-100"
