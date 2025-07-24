@@ -11,6 +11,7 @@ const Login = () => {
   const [password, setpassword] = useState("Sashank@1234");
   const navigate = useNavigate();
   const dispatch = useDispatch()
+  const [error, seterror] = useState("")
   const handleLogin = async () => {
     try {
       const result = await axios.post(
@@ -24,7 +25,7 @@ const Login = () => {
       dispatch(addUser(result.data))
       return navigate("/feed")
     } catch (err) {
-      console.log(err);
+      seterror(err?.response?.data?.message)
     }
   };
   const handleSignup = () => {
@@ -66,7 +67,7 @@ const Login = () => {
               value={password}
             />
           </fieldset>
-
+          {error && (<p className="font-bold text-red-600 ">ERROR: {error.toUpperCase()}!</p>)}
           <div className="form-control mt-3 flex justify-center">
             <button className="btn btn-primary" onClick={handleLogin}>
               Login
