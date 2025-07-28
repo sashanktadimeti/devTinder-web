@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { addUser } from "./utils/userSlice";
-import { BASE_URL } from "./utils/constants";
+import { BASE_URL, EYE_OPEN, EYE_CLOSED } from "./utils/constants";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -14,6 +14,7 @@ const Signup = () => {
   const [password, setpassword] = useState("");
   const [gender, setgender] = useState("");
   const [error, seterror] = useState("");
+  const [eyeopen, seteyeopen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -115,13 +116,23 @@ const Signup = () => {
             <label className="label">
               <span className="label-text">Password</span>
             </label>
-            <input
-              onChange={(e) => setpassword(e.target.value)}
-              type="password"
-              placeholder="Enter your password"
-              className="input input-bordered"
-              value={password}
-            />
+            <div className="relative">
+                          <input
+                            onChange={(e) => setpassword(e.target.value)}
+                            type={eyeopen ? "text" : "password"}
+                            placeholder="Enter your password"
+                            className="input input-bordered w-full pr-10"
+                            value={password}
+                          />
+                          <img
+                            src={eyeopen ? EYE_OPEN : EYE_CLOSED}
+                            alt="Toggle password visibility"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                            onClick={() => seteyeopen((prev) => !prev)}
+                            style={{ width: "24px", height: "24px" }}
+                          />
+                        </div>
+            
           </fieldset>
 
           {/* Error */}
