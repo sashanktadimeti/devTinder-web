@@ -13,6 +13,7 @@ const Signup = () => {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [gender, setgender] = useState("");
+  console.log(gender)
   const [error, seterror] = useState("");
   const [eyeopen, seteyeopen] = useState(false);
   const navigate = useNavigate();
