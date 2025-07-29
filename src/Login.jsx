@@ -4,14 +4,15 @@ import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "./utils/userSlice";
-import { BASE_URL } from "./utils/constants";
+import { BASE_URL, EYE_OPEN, EYE_CLOSED } from "./utils/constants";
 
 const Login = () => {
-  const [email, setemail] = useState("suresh@gmail.com");
-  const [password, setpassword] = useState("Sashank@1234");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const [error, seterror] = useState("")
+  const [eyeopen, seteyeopen] = useState(false);
   const handleLogin = async () => {
     try {
       const result = await axios.post(
@@ -59,13 +60,22 @@ const Login = () => {
             <label className="label">
               <span className="label-text">Password</span>
             </label>
-            <input
-              onChange={(e) => setpassword(e.target.value)}
-              type="password"
-              placeholder="Enter your password"
-              className="input input-bordered"
-              value={password}
-            />
+            <div className="relative">
+              <input
+                onChange={(e) => setpassword(e.target.value)}
+                type={eyeopen ? "text" : "password"}
+                placeholder="Enter your password"
+                className="input input-bordered w-full pr-10"
+                value={password}
+              />
+              <img
+                src={eyeopen ? EYE_OPEN : EYE_CLOSED}
+                alt="Toggle password visibility"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => seteyeopen((prev) => !prev)}
+                style={{ width: "24px", height: "24px" }}
+              />
+            </div>
           </fieldset>
           {error && (<p className="font-bold text-red-600 ">ERROR: {error.toUpperCase()}!</p>)}
           <div className="form-control mt-3 flex justify-center">
