@@ -3,23 +3,28 @@ import React from "react";
 import { BASE_URL } from "./utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "./utils/feedSlice";
+
 const Usercard = ({ item }) => {
   const dispatch = useDispatch();
+
   const handleInterest = async (status, _id) => {
     try {
-      const results = await axios.post(
-        BASE_URL + "/sendConnectionRequest/" + status + "/" + _id , {},{withCredentials: true}
+      await axios.post(
+        `${BASE_URL}/sendConnectionRequest/${status}/${_id}`,
+        {},
+        { withCredentials: true }
       );
       dispatch(removeUserFromFeed(_id));
     } catch (err) {
-      
+      // Handle error (optional)
     }
   };
+
   return (
-    <div className="max-w-sm mx-auto my-1">
+    <div className="max-w-sm mx-auto my-2">
       <div className="card bg-base-100 shadow-xl border border-gray-200 rounded-2xl">
-        {/* Profile Image */}
-        <figure className="px-4 pt-2">
+        {/* Profile Image (keep this outside scrollable area) */}
+        <figure className="px-4 pt-4 flex justify-center">
           <img
             src={item.photoUrl}
             alt="Profile"
@@ -27,7 +32,8 @@ const Usercard = ({ item }) => {
           />
         </figure>
 
-        <div className="card-body items-center text-center">
+        {/* Scrollable content only inside the body */}
+        <div className="card-body items-center text-center overflow-y-auto max-h-[300px]">
           {/* Name */}
           <h2 className="card-title text-xl font-bold text-neutral">
             {item.firstName?.toUpperCase()} {item.lastName?.toUpperCase()}
@@ -67,8 +73,18 @@ const Usercard = ({ item }) => {
 
           {/* Action Buttons */}
           <div className="card-actions mt-5 flex justify-center gap-3">
-            <button className="btn btn-outline btn-success" onClick={()=>{handleInterest("interested", item._id)}}>Interested</button>
-            <button className="btn btn-outline btn-error" onClick={()=>{handleInterest("rejected", item._id)}}>Reject</button>
+            <button
+              className="btn btn-outline btn-success"
+              onClick={() => handleInterest("interested", item._id)}
+            >
+              Interested
+            </button>
+            <button
+              className="btn btn-outline btn-error"
+              onClick={() => handleInterest("rejected", item._id)}
+            >
+              Reject
+            </button>
           </div>
         </div>
       </div>
